@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export const RegisterForm = () => {
@@ -18,7 +18,6 @@ export const RegisterForm = () => {
     setError('');
     setIsLoading(true);
 
-    // Validation
     if (!username || !email || !password || !confirmPassword) {
       setError('All fields are required');
       setIsLoading(false);
@@ -55,77 +54,67 @@ export const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Register</h1>
+    <form onSubmit={handleSubmit}>
+      <h1>Registration</h1>
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-        </div>
-      )}
+      {error && <div className="auth-error">{error}</div>}
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+      <div className="auth-input-box">
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Choose a username"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+          placeholder="Username"
           required
         />
+        <i className="bx bxs-user"></i>
       </div>
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+      <div className="auth-input-box">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+          placeholder="Email"
           required
         />
+        <i className="bx bxs-envelope"></i>
       </div>
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+      <div className="auth-input-box">
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Choose a password"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+          placeholder="Password"
           required
         />
+        <i className="bx bxs-lock-alt"></i>
       </div>
 
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+      <div className="auth-input-box">
         <input
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirm your password"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
+          placeholder="Confirm Password"
           required
         />
+        <i className="bx bxs-lock-alt"></i>
       </div>
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition disabled:opacity-50"
-      >
+      <button type="submit" className="auth-btn" disabled={isLoading}>
         {isLoading ? 'Registering...' : 'Register'}
       </button>
 
-      <p className="text-center text-sm text-gray-600 mt-6">
-        Already have an account?{' '}
-        <Link to="/login" className="text-purple-600 hover:text-purple-700 font-semibold">
-          Login here
-        </Link>
-      </p>
+      <p>or register with</p>
+
+      <div className="auth-social-icons">
+        <a href="#"><i className="bx bxl-google"></i></a>
+        <a href="#"><i className="bx bxl-facebook"></i></a>
+        <a href="#"><i className="bx bxl-github"></i></a>
+        <a href="#"><i className="bx bxl-linkedin"></i></a>
+      </div>
     </form>
   );
 };
