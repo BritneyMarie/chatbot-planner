@@ -29,7 +29,7 @@
   border-radius: 6px;
   font-family: inherit;
   font-size: 0.95rem;
-  transition: border-color 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .form-group input:focus,
@@ -37,7 +37,8 @@
 .form-group select:focus {
   outline: none;
   border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  transform: translateY(-2px);
 }
 
 .form-group input.error,
@@ -95,7 +96,7 @@
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   font-size: 0.95rem;
 }
 
@@ -105,12 +106,12 @@
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
@@ -121,6 +122,8 @@
 
 .btn-secondary:hover {
   background: #ececec;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 640px) {

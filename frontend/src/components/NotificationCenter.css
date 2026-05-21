@@ -8,7 +8,18 @@
   display: flex;
   justify-content: flex-end;
   z-index: 9100;
-  backdrop-filter: blur(3px);
+  animation: fadeInBackdrop 0.3s ease-in;
+}
+
+@keyframes fadeInBackdrop {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+  }
 }
 
 .notification-center-container {
@@ -18,8 +29,8 @@
   background: white;
   display: flex;
   flex-direction: column;
-  box-shadow: -2px 0 16px rgba(0, 0, 0, 0.15);
-  animation: slideInRight 0.3s ease-out;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes slideInRight {
@@ -81,11 +92,12 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .close-btn:hover {
   background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg) scale(1.15);
 }
 
 /* Toolbar */
@@ -107,12 +119,14 @@
   cursor: pointer;
   color: #333;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .toolbar-btn:hover {
   background: #f0f0f0;
   border-color: #999;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .toolbar-btn.danger:hover {
@@ -182,14 +196,14 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  transition: background 0.2s;
-  animation: slideInNotif 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: slideInNotif 0.4s ease-out;
 }
 
 @keyframes slideInNotif {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-30px);
   }
   to {
     opacity: 1;
@@ -199,6 +213,7 @@
 
 .notification-item:hover {
   background: #f8f9fa;
+  transform: translateX(4px);
 }
 
 .notification-item.unread {
@@ -269,11 +284,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .action-btn:hover {
   background: #e0e0e0;
+  transform: scale(1.15);
 }
 
 .action-btn.delete-btn:hover {

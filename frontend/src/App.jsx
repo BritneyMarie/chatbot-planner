@@ -1,26 +1,65 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
 import PrivateRoute from './components/PrivateRoute'
-import LoginPage from './pages/LoginPage'
-import HomePage from './pages/HomePage'
-import SettingsPage from './pages/SettingsPage'
-import Onboarding from './components/Onboarding'
 import './App.css'
+
+// Loading component for code-split routes
+const RouteLoader = () => (
+  <div className="route-loader">
+    <div className="spinner"></div>
+    <p>Loading...</p>
+  </div>
+);
+
+// Code-split routes with lazy loading
+// These are loaded on-demand when the route is accessed
+const LoginPage = lazy(() => 
+  import(/* webpackChunkName: "auth" */ './pages/LoginPage')
+);
+
+const HomePage = lazy(() => 
+  import(/* webpackChunkName: "home" */ './pages/HomePage')
+);
+
+const SettingsPage = lazy(() => 
+  import(/* webpackChunkName: "settings" */ './pages/SettingsPage')
+);
+
+const Onboarding = lazy(() => 
+  import(/* webpackChunkName: "onboarding" */ './components/Onboarding')
+);
 
 function AppContent() {
   return (
     <Routes>
       {/* Public routes */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<LoginPage />} />
+      <Route 
+        path="/login" 
+        element={
+          <Suspense fallback={<RouteLoader />}>
+            <LoginPage />
+          </Suspense>
+        } 
+      />
+      <Route 
+        path="/register" 
+        element={
+          <Suspense fallback={<RouteLoader />}>
+            <LoginPage />
+          </Suspense>
+        } 
+      />
 
       {/* Protected routes */}
       <Route
         path="/home"
         element={
           <PrivateRoute>
-            <HomePage />
+            <Suspense fallback={<RouteLoader />}>
+              <HomePage />
+            </Suspense>
           </PrivateRoute>
         }
       />
@@ -29,7 +68,9 @@ function AppContent() {
         path="/settings"
         element={
           <PrivateRoute>
-            <SettingsPage />
+            <Suspense fallback={<RouteLoader />}>
+              <SettingsPage />
+            </Suspense>
           </PrivateRoute>
         }
       />

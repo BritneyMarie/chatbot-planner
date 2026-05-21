@@ -43,25 +43,38 @@
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   white-space: nowrap;
 }
 
 .filter-toggle:hover {
   border-color: #667eea;
   background: #f0f4ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .filter-toggle.active {
   background: #667eea;
   color: white;
   border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .filter-toggle.has-filters {
   background: #fef3c7;
   border-color: #f97316;
   color: #92400e;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(249, 115, 22, 0);
+  }
 }
 
 .filter-badge {
@@ -151,17 +164,19 @@
   border: 3px solid transparent;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .color-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
   border-color: #ccc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .color-btn.active {
   border-color: #333;
   box-shadow: 0 0 0 2px white, 0 0 0 4px #333;
+  transform: scale(1.1);
 }
 
 .checkbox-label {
@@ -193,11 +208,14 @@
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .btn-clear:hover {
   background: #fecaca;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.2);
+}
 }
 
 @media (max-width: 768px) {

@@ -1,9 +1,17 @@
 import api from './api';
+import cacheManager from '../utils/cacheManager';
 
-// Get all templates (user + default)
+// Get all templates (user + default) with caching
 export const getTemplates = async () => {
   try {
+    const cached = cacheManager.get('templates_all');
+    if (cached) {
+      console.log('📦 All templates from cache');
+      return cached.data;
+    }
+
     const response = await api.get('/templates');
+    cacheManager.set('templates_all', response.data, 10 * 60 * 1000); // 10 min TTL
     return response.data;
   } catch (error) {
     console.error('Failed to fetch templates:', error);
@@ -11,10 +19,17 @@ export const getTemplates = async () => {
   }
 };
 
-// Get user templates only
+// Get user templates only with caching
 export const getUserTemplates = async () => {
   try {
+    const cached = cacheManager.get('templates_user');
+    if (cached) {
+      console.log('📦 User templates from cache');
+      return cached.data.templates;
+    }
+
     const response = await api.get('/templates/user');
+    cacheManager.set('templates_user', response.data, 10 * 60 * 1000); // 10 min TTL
     return response.data.templates;
   } catch (error) {
     console.error('Failed to fetch user templates:', error);
@@ -22,10 +37,17 @@ export const getUserTemplates = async () => {
   }
 };
 
-// Get default templates
+// Get default templates with caching
 export const getDefaultTemplates = async () => {
   try {
+    const cached = cacheManager.get('templates_defaults');
+    if (cached) {
+      console.log('📦 Default templates from cache');
+      return cached.data.templates;
+    }
+
     const response = await api.get('/templates/defaults');
+    cacheManager.set('templates_defaults', response.data, 15 * 60 * 1000); // 15 min TTL (rarely changes)
     return response.data.templates;
   } catch (error) {
     console.error('Failed to fetch default templates:', error);
@@ -33,9 +55,12 @@ export const getDefaultTemplates = async () => {
   }
 };
 
-// Create template
+// Create template with cache invalidation
 export const createTemplate = async (templateData) => {
   try {
+    // Invalidate template caches
+    cacheManager.invalidatePattern('templates');
+    
     const response = await api.post('/templates', templateData);
     return response.data.template;
   } catch (error) {
@@ -44,10 +69,19 @@ export const createTemplate = async (templateData) => {
   }
 };
 
-// Get single template
+// Get single template with caching
 export const getTemplate = async (id) => {
   try {
+    const cacheKey = `template_${id}`;
+    const cached = cacheManager.get(cacheKey);
+    
+    if (cached) {
+      console.log('📦 Template from cache');
+      return cached.data.template;
+    }
+
     const response = await api.get(`/templates/${id}`);
+    cacheManager.set(cacheKey, response.data, 10 * 60 * 1000); // 10 min TTL
     return response.data.template;
   } catch (error) {
     console.error('Failed to fetch template:', error);
@@ -55,9 +89,13 @@ export const getTemplate = async (id) => {
   }
 };
 
-// Update template
+// Update template with cache invalidation
 export const updateTemplate = async (id, updates) => {
   try {
+    // Invalidate template caches
+    cacheManager.invalidatePattern('templates');
+    cacheManager.invalidate(`template_${id}`);
+    
     const response = await api.put(`/templates/${id}`, updates);
     return response.data.template;
   } catch (error) {
@@ -66,9 +104,13 @@ export const updateTemplate = async (id, updates) => {
   }
 };
 
-// Delete template
+// Delete template with cache invalidation
 export const deleteTemplate = async (id) => {
   try {
+    // Invalidate template caches
+    cacheManager.invalidatePattern('templates');
+    cacheManager.invalidate(`template_${id}`);
+    
     await api.delete(`/templates/${id}`);
     return true;
   } catch (error) {

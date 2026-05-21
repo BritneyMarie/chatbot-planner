@@ -5,6 +5,18 @@
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  animation: fadeInScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .calendar-controls {
@@ -29,17 +41,19 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .view-btn:hover {
   background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
 }
 
 .view-btn.active {
   background: white;
   color: #667eea;
   border-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .today-btn {
@@ -50,11 +64,13 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .today-btn:hover {
   background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  border-color: white;
 }
 
 .calendar-error {
@@ -90,11 +106,13 @@
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .calendar-header button:hover {
   background: #764ba2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .calendar-header h2 {
@@ -126,6 +144,16 @@
   gap: 1px;
   background: #ddd;
   min-height: 500px;
+  animation: gridFadeIn 0.5s ease-out;
+}
+
+@keyframes gridFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .calendar-day {
@@ -133,12 +161,35 @@
   padding: 10px;
   min-height: 100px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
+  animation: dayFadeIn 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.calendar-day:nth-child(1) { animation-delay: 0.01s; }
+.calendar-day:nth-child(2) { animation-delay: 0.02s; }
+.calendar-day:nth-child(3) { animation-delay: 0.03s; }
+.calendar-day:nth-child(4) { animation-delay: 0.04s; }
+.calendar-day:nth-child(5) { animation-delay: 0.05s; }
+.calendar-day:nth-child(6) { animation-delay: 0.06s; }
+.calendar-day:nth-child(7) { animation-delay: 0.07s; }
+
+@keyframes dayFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .calendar-day:hover {
   background: #f5f5f5;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .calendar-day.today {
@@ -172,6 +223,24 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  animation: eventSlideIn 0.3s ease-out;
+  transition: all 0.2s ease;
+}
+
+@keyframes eventSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.event-dot:hover {
+  transform: translateX(2px);
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
 }
 
 .event-more {
@@ -198,11 +267,29 @@
   min-height: 400px;
   display: flex;
   flex-direction: column;
+  animation: slideInLeft 0.4s ease-out;
+  transition: all 0.3s ease;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.week-day:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .week-day.today {
   background: #fffacd;
   border: 2px solid #667eea;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
 }
 
 .day-header {
@@ -237,12 +324,25 @@
   padding: 8px;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: eventFadeIn 0.3s ease-out;
+}
+
+@keyframes eventFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .event-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  background: #5568d3;
 }
 
 .event-time {
@@ -285,12 +385,25 @@
   padding: 16px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: slideInRight 0.4s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .timeline-event:hover {
-  transform: translateX(5px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateX(8px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  background: #5568d3;
 }
 
 .event-time {
@@ -367,11 +480,13 @@
   cursor: pointer;
   background: white;
   border: 1px solid #eee;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .mini-day:hover {
   background: #f0f0f0;
+  transform: scale(1.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .mini-day.other {

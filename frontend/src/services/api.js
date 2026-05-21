@@ -1,4 +1,5 @@
 import axios from 'axios';
+import cacheManager from '../utils/cacheManager';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -52,25 +53,73 @@ export const authAPI = {
     api.post('/auth/refresh'),
 };
 
-// Events API calls
+// Events API calls with caching support
 export const eventsAPI = {
-  createEvent: (title, description, startTime, endTime, color) =>
-    api.post('/events', { title, description, startTime, endTime, color }),
+  createEvent: (title, description, startTime, endTime, color) => {
+    // Invalidate relevant caches on create
+    cacheManager.invalidatePattern('events');
+    return api.post('/events', { title, description, startTime, endTime, color });
+  },
   
-  getEvents: (startDate = null, endDate = null) =>
-    api.get('/events', { params: { startDate, endDate } }),
+  getEvents: (startDate = null, endDate = null) => {
+    const cacheKey = `events_range_${startDate}_${endDate}`;
+    const cached = cacheManager.get(cacheKey);
+    
+    if (cached) {
+      console.log('📦 Events from cache (range)');
+      return Promise.resolve(cached);
+    }
+    
+    return api.get('/events', { params: { startDate, endDate } })
+      .then(response => {
+        cacheManager.set(cacheKey, response, 3 * 60 * 1000); // 3 min TTL
+        return response;
+      });
+  },
   
-  getEventsByDay: (date) =>
-    api.get('/events/day', { params: { date } }),
+  getEventsByDay: (date) => {
+    const cacheKey = `events_day_${date}`;
+    const cached = cacheManager.get(cacheKey);
+    
+    if (cached) {
+      console.log('📦 Events from cache (day)');
+      return Promise.resolve(cached);
+    }
+    
+    return api.get('/events/day', { params: { date } })
+      .then(response => {
+        cacheManager.set(cacheKey, response, 2 * 60 * 1000); // 2 min TTL
+        return response;
+      });
+  },
   
-  getEventsByMonth: (year, month) =>
-    api.get('/events/month', { params: { year, month } }),
+  getEventsByMonth: (year, month) => {
+    const cacheKey = `events_month_${year}_${month}`;
+    const cached = cacheManager.get(cacheKey);
+    
+    if (cached) {
+      console.log('📦 Events from cache (month)');
+      return Promise.resolve(cached);
+    }
+    
+    return api.get('/events/month', { params: { year, month } })
+      .then(response => {
+        cacheManager.set(cacheKey, response, 5 * 60 * 1000); // 5 min TTL
+        return response;
+      });
+  },
   
-  updateEvent: (id, updates) =>
-    api.put(`/events/${id}`, updates),
+  updateEvent: (id, updates) => {
+    // Invalidate relevant caches on update
+    cacheManager.invalidatePattern('events');
+    return api.put(`/events/${id}`, updates);
+  },
   
-  deleteEvent: (id) =>
-    api.delete(`/events/${id}`),
+  deleteEvent: (id) => {
+    // Invalidate relevant caches on delete
+    cacheManager.invalidatePattern('events');
+    return api.delete(`/events/${id}`);
+  },
 };
 
 export default api;
