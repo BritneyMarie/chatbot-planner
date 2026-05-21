@@ -21,7 +21,7 @@ app.get('/api/health', (req, res) => {
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
-// app.use('/api/events', require('./routes/events'));
+app.use('/api/events', require('./routes/events'));
 // app.use('/api/chatbot', require('./routes/chatbot'));
 // app.use('/api/user', require('./routes/user'));
 

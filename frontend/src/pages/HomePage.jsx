@@ -1,7 +1,25 @@
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import Calendar from '../components/Calendar';
+import EventModal from '../components/EventModal';
 
 export const HomePage = () => {
   const { user } = useAuth();
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [calendarRefresh, setCalendarRefresh] = useState(0);
+
+  const handleCalendarEventClick = (date, event = null) => {
+    setSelectedDate(date);
+    setSelectedEvent(event || null);
+    setShowEventModal(true);
+  };
+
+  const handleEventSaved = () => {
+    // Refresh calendar
+    setCalendarRefresh(prev => prev + 1);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
@@ -13,26 +31,9 @@ export const HomePage = () => {
           You're now logged in to the Chatbot-Assisted Weekly Planner
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Calendar placeholder */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">📅 Calendar</h2>
-            <div className="h-64 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center">
-              <p className="text-gray-600 text-center">
-                Calendar component coming in Phase 4 with day/week/month/year views
-              </p>
-            </div>
-          </div>
-
-          {/* Chatbot placeholder */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">🤖 Chatbot Assistant</h2>
-            <div className="h-64 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-lg flex items-center justify-center">
-              <p className="text-gray-600 text-center">
-                Chatbot component coming in Phase 6 with AI integration
-              </p>
-            </div>
-          </div>
+        {/* Calendar component */}
+        <div className="mb-12">
+          <Calendar key={calendarRefresh} onEventClick={handleCalendarEventClick} />
         </div>
 
         {/* Feature overview */}
@@ -63,8 +64,8 @@ export const HomePage = () => {
           <div className="space-y-2 text-sm text-indigo-800">
             <p>✅ Phase 1: Project Structure & Setup</p>
             <p>✅ Phase 2: Database & Authentication</p>
-            <p>✅ Phase 3: Frontend Auth & Layout (Current)</p>
-            <p>⏳ Phase 4: Calendar Component</p>
+            <p>✅ Phase 3: Frontend Auth & Layout</p>
+            <p>🔄 Phase 4: Calendar Component (In Progress)</p>
             <p>⏳ Phase 5: Onboarding Tour & Settings</p>
             <p>⏳ Phase 6: Chatbot Integration</p>
             <p>⏳ Phase 7: Theming & Customization</p>
@@ -72,6 +73,14 @@ export const HomePage = () => {
           </div>
         </div>
       </div>
+
+      <EventModal
+        isOpen={showEventModal}
+        onClose={() => setShowEventModal(false)}
+        onEventSaved={handleEventSaved}
+        selectedDate={selectedDate}
+        event={selectedEvent}
+      />
     </div>
   );
 };

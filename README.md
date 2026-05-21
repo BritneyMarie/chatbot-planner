@@ -94,36 +94,42 @@ CREATE DATABASE chatbot_planner;
 
 Update `.env` with your connection details.
 
-## API Endpoints (Coming Soon)
+## API Endpoints
 
-### Authentication
+For complete API documentation, see [API_DOCS.md](backend/API_DOCS.md)
+
+### Authentication (Phase 2 ✅)
 - `POST /api/auth/register` — Register new user
 - `POST /api/auth/login` — Login user
 - `POST /api/auth/logout` — Logout user
 - `POST /api/auth/refresh` — Refresh JWT token
 
-### Events
+### Events (Phase 4 🔄)
 - `GET /api/events` — List user's events
+- `GET /api/events/day?date=YYYY-MM-DD` — Get events for specific day
+- `GET /api/events/month?year=YYYY&month=MM` — Get events for specific month
 - `POST /api/events` — Create event
 - `PUT /api/events/:id` — Update event
 - `DELETE /api/events/:id` — Delete event
 
-### Chatbot
+### Chatbot (Phase 6 ⏳)
 - `POST /api/chatbot/message` — Send message to chatbot
 - `GET /api/chatbot/history` — Get conversation history
 
-### User
+### User (Phase 7 ⏳)
 - `GET /api/user/preferences` — Get user theme preferences
 - `PUT /api/user/preferences` — Update theme preferences
 
 ## Features (Roadmap)
 
-- ✅ Project structure
-- 🔲 User authentication (Phase 2)
-- 🔲 Calendar (Day/Week/Month/Year views) (Phase 4)
-- 🔲 Onboarding tour (Phase 5)
-- 🔲 Theme customization (Phase 7)
-- 🔲 AI Chatbot integration (Phase 6)
+- ✅ Phase 1: Project structure & setup
+- ✅ Phase 2: Authentication (JWT + bcrypt)
+- ✅ Phase 3: Frontend auth & layout
+- 🔄 Phase 4: Calendar (Day/Week/Month/Year views) — IN PROGRESS
+- ⏳ Phase 5: Onboarding tour & settings
+- ⏳ Phase 6: AI Chatbot integration (OpenAI)
+- ⏳ Phase 7: Theme customization
+- ⏳ Phase 8: Testing & deployment
 
 ## Environment Variables
 
@@ -199,4 +205,5 @@ ISC
 
 ---
 
-**Next Steps:** Phase 1 complete! Ready for Phase 2 (Database & Authentication).
+**Progress Update:** Phase 4 complete! Calendar component with day/week/month/year views is now functional.
+**Next Steps:** Phase 5 - Onboarding tour & settings integration.

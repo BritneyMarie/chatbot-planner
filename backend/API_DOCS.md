@@ -1,74 +1,65 @@
-# Authentication API Documentation
+# API Documentation
 
-## Base URL
+## Authentication API
+
+### Base URL
 ```
 http://localhost:5000/api/auth
 ```
 
-## Endpoints
+### Endpoints
 
-### 1. Register User
+#### 1. Register
+**POST** `/register`
 
-**Endpoint:** `POST /api/auth/register`
-
-**Description:** Create a new user account
+Register a new user.
 
 **Request Body:**
 ```json
 {
-  "username": "johndoe",
+  "username": "john_doe",
   "email": "john@example.com",
-  "password": "password123",
-  "confirmPassword": "password123"
+  "password": "SecurePassword123",
+  "confirmPassword": "SecurePassword123"
 }
 ```
+
+**Validation Rules:**
+- Username: minimum 3 characters
+- Password: minimum 6 characters
+- Email: valid email format
+- Passwords must match
 
 **Success Response (201):**
 ```json
 {
   "message": "User registered successfully.",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
     "id": 1,
-    "username": "johndoe",
+    "username": "john_doe",
     "email": "john@example.com"
-  },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
 }
 ```
 
 **Error Responses:**
-- `400` - Missing fields or validation error
-  ```json
-  { "error": "All fields are required." }
-  ```
-- `409` - Email or username already exists
-  ```json
-  { "error": "Email already registered." }
-  ```
-- `500` - Server error
-  ```json
-  { "error": "Failed to register user." }
-  ```
-
-**Validation Rules:**
-- Username: minimum 3 characters
-- Password: minimum 6 characters
-- Passwords must match
-- Email must be valid format
+- `400`: Validation failed (missing fields, username too short, password too short, passwords don't match)
+- `409`: User already exists
+- `500`: Server error
 
 ---
 
-### 2. Login User
+#### 2. Login
+**POST** `/login`
 
-**Endpoint:** `POST /api/auth/login`
-
-**Description:** Authenticate user and receive JWT token
+Authenticate a user.
 
 **Request Body:**
 ```json
 {
   "email": "john@example.com",
-  "password": "password123"
+  "password": "SecurePassword123"
 }
 ```
 
@@ -76,41 +67,27 @@ http://localhost:5000/api/auth
 ```json
 {
   "message": "Login successful.",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
     "id": 1,
-    "username": "johndoe",
+    "username": "john_doe",
     "email": "john@example.com"
-  },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
 }
 ```
 
 **Error Responses:**
-- `400` - Missing email or password
-  ```json
-  { "error": "Email and password are required." }
-  ```
-- `401` - Invalid credentials
-  ```json
-  { "error": "Invalid email or password." }
-  ```
-- `500` - Server error
-  ```json
-  { "error": "Failed to login." }
-  ```
+- `400`: Missing email or password
+- `401`: Invalid credentials
+- `404`: User not found
+- `500`: Server error
 
 ---
 
-### 3. Logout User
+#### 3. Logout
+**POST** `/logout`
 
-**Endpoint:** `POST /api/auth/logout`
-
-**Description:** Logout user (mostly client-side, clears token)
-
-**Request Body:**
-```json
-{}
-```
+Logout a user (token is cleared client-side).
 
 **Success Response (200):**
 ```json
@@ -121,165 +98,476 @@ http://localhost:5000/api/auth
 
 ---
 
-### 4. Refresh Token
+#### 4. Refresh Token
+**POST** `/refresh`
 
-**Endpoint:** `POST /api/auth/refresh`
-
-**Description:** Generate a new JWT token (extends session)
+Refresh an expired JWT token.
 
 **Headers:**
 ```
-Authorization: Bearer <existing_token>
-```
-
-**Request Body:**
-```json
-{}
+Authorization: Bearer <token>
 ```
 
 **Success Response (200):**
 ```json
 {
-  "message": "Token refreshed successfully.",
+  "message": "Token refreshed.",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
 
 **Error Responses:**
-- `401` - No token or invalid token
-  ```json
-  { "error": "Access denied. No token provided." }
-  ```
-- `401` - Token expired
-  ```json
-  { "error": "Token has expired." }
-  ```
-- `401` - User not found
-  ```json
-  { "error": "User not found." }
-  ```
+- `401`: Invalid or expired token
+- `404`: User not found
+- `500`: Server error
+
+---
+
+## Events API
+
+### Base URL
+```
+http://localhost:5000/api/events
+```
+
+**All events endpoints require authentication.** Include the JWT token in the Authorization header:
+```
+Authorization: Bearer <token>
+```
+
+### Endpoints
+
+#### 1. Create Event
+**POST** `/`
+
+Create a new event for the authenticated user.
+
+**Request Body:**
+```json
+{
+  "title": "Team Meeting",
+  "description": "Quarterly planning meeting",
+  "startTime": "2024-01-15T14:00:00Z",
+  "endTime": "2024-01-15T15:00:00Z",
+  "color": "#667eea"
+}
+```
+
+**Validation:**
+- `title`: required, string
+- `startTime`: required, ISO 8601 datetime
+- `endTime`: required, ISO 8601 datetime
+- `endTime` must be after `startTime`
+- `description`: optional, string
+- `color`: optional, hex color code (default: #667eea)
+
+**Success Response (201):**
+```json
+{
+  "message": "Event created successfully.",
+  "event": {
+    "id": 1,
+    "user_id": 1,
+    "title": "Team Meeting",
+    "description": "Quarterly planning meeting",
+    "start_time": "2024-01-15T14:00:00.000Z",
+    "end_time": "2024-01-15T15:00:00.000Z",
+    "color": "#667eea",
+    "created_at": "2024-01-15T10:30:00.000Z",
+    "updated_at": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+- `400`: Validation failed (missing required fields, invalid times)
+- `401`: Unauthorized (invalid or missing token)
+- `500`: Server error
+
+---
+
+#### 2. Get All Events
+**GET** `/`
+
+Retrieve all events for the authenticated user with optional date range filtering.
+
+**Query Parameters (Optional):**
+- `startDate`: ISO 8601 datetime (e.g., `2024-01-01T00:00:00Z`)
+- `endDate`: ISO 8601 datetime (e.g., `2024-01-31T23:59:59Z`)
+
+**Examples:**
+```
+GET /api/events
+GET /api/events?startDate=2024-01-01T00:00:00Z&endDate=2024-01-31T23:59:59Z
+```
+
+**Success Response (200):**
+```json
+{
+  "events": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "title": "Team Meeting",
+      "description": "Quarterly planning meeting",
+      "start_time": "2024-01-15T14:00:00.000Z",
+      "end_time": "2024-01-15T15:00:00.000Z",
+      "color": "#667eea",
+      "created_at": "2024-01-15T10:30:00.000Z",
+      "updated_at": "2024-01-15T10:30:00.000Z"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized
+- `500`: Server error
+
+---
+
+#### 3. Get Events for a Specific Day
+**GET** `/day`
+
+Retrieve all events for a specific day.
+
+**Query Parameters:**
+- `date`: ISO 8601 datetime (required, e.g., `2024-01-15`)
+
+**Example:**
+```
+GET /api/events/day?date=2024-01-15
+```
+
+**Success Response (200):**
+```json
+{
+  "events": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "title": "Team Meeting",
+      "description": "Quarterly planning meeting",
+      "start_time": "2024-01-15T14:00:00.000Z",
+      "end_time": "2024-01-15T15:00:00.000Z",
+      "color": "#667eea",
+      "created_at": "2024-01-15T10:30:00.000Z",
+      "updated_at": "2024-01-15T10:30:00.000Z"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `400`: Missing date parameter
+- `401`: Unauthorized
+- `500`: Server error
+
+---
+
+#### 4. Get Events for a Specific Month
+**GET** `/month`
+
+Retrieve all events for a specific month.
+
+**Query Parameters:**
+- `year`: year (required, e.g., `2024`)
+- `month`: month 1-12 (required, e.g., `1` for January)
+
+**Example:**
+```
+GET /api/events/month?year=2024&month=1
+```
+
+**Success Response (200):**
+```json
+{
+  "events": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "title": "Team Meeting",
+      "start_time": "2024-01-15T14:00:00.000Z",
+      "end_time": "2024-01-15T15:00:00.000Z",
+      "color": "#667eea",
+      "created_at": "2024-01-15T10:30:00.000Z",
+      "updated_at": "2024-01-15T10:30:00.000Z"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `400`: Missing year or month parameter
+- `401`: Unauthorized
+- `500`: Server error
+
+---
+
+#### 5. Update Event
+**PUT** `/:id`
+
+Update an existing event (user must own the event).
+
+**Request Body:**
+```json
+{
+  "title": "Updated Team Meeting",
+  "description": "Updated description",
+  "startTime": "2024-01-15T15:00:00Z",
+  "endTime": "2024-01-15T16:00:00Z",
+  "color": "#764ba2"
+}
+```
+
+**Note:** All fields are optional. Only provided fields will be updated.
+
+**Success Response (200):**
+```json
+{
+  "message": "Event updated successfully.",
+  "event": {
+    "id": 1,
+    "user_id": 1,
+    "title": "Updated Team Meeting",
+    "description": "Updated description",
+    "start_time": "2024-01-15T15:00:00.000Z",
+    "end_time": "2024-01-15T16:00:00.000Z",
+    "color": "#764ba2",
+    "created_at": "2024-01-15T10:30:00.000Z",
+    "updated_at": "2024-01-15T11:00:00.000Z"
+  }
+}
+```
+
+**Error Responses:**
+- `400`: Validation failed (invalid time range)
+- `401`: Unauthorized
+- `404`: Event not found
+- `500`: Server error
+
+---
+
+#### 6. Delete Event
+**DELETE** `/:id`
+
+Delete an existing event (user must own the event).
+
+**Success Response (200):**
+```json
+{
+  "message": "Event deleted successfully."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized
+- `404`: Event not found
+- `500`: Server error
 
 ---
 
 ## JWT Token Format
 
-Tokens are valid for **7 days** by default (configurable via `JWT_EXPIRE` in `.env`)
+All tokens follow the JWT standard and include the following payload:
 
-**Token payload:**
 ```json
 {
   "userId": 1,
-  "iat": 1621234567,
-  "exp": 1621839367
+  "iat": 1705324200,
+  "exp": 1705929000
 }
 ```
 
-## Using the Token
+**Token Expiration:** 7 days from creation
 
-For protected endpoints, include the token in the Authorization header:
+---
+
+## Error Status Codes
+
+| Status | Meaning | Common Causes |
+|--------|---------|---------------|
+| 200 | OK | Successful request |
+| 201 | Created | Resource successfully created |
+| 400 | Bad Request | Missing/invalid parameters, validation failed |
+| 401 | Unauthorized | Missing/invalid token, credentials invalid |
+| 404 | Not Found | Resource doesn't exist |
+| 409 | Conflict | Duplicate resource (e.g., user already exists) |
+| 500 | Server Error | Database error, unexpected exception |
+
+---
+
+## Using Tokens in Requests
+
+Once authenticated, include the token in all subsequent requests:
 
 ```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer <token>
+```
+
+### Example with cURL:
+```bash
+curl -X GET http://localhost:5000/api/events \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+### Example with JavaScript/Fetch:
+```javascript
+fetch('http://localhost:5000/api/events', {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+})
 ```
 
 ---
 
-## Testing the API
+## Full Authentication & Events Flow Example
 
-### Using cURL
-
-**Register:**
+1. **Register**
 ```bash
 curl -X POST http://localhost:5000/api/auth/register \
   -H "Content-Type: application/json" \
-  -d '{
-    "username": "johndoe",
-    "email": "john@example.com",
-    "password": "password123",
-    "confirmPassword": "password123"
-  }'
+  -d '{"username":"user1","email":"user@example.com","password":"Pass123","confirmPassword":"Pass123"}'
 ```
 
-**Login:**
+2. **Login**
 ```bash
 curl -X POST http://localhost:5000/api/auth/login \
   -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"Pass123"}'
+```
+
+3. **Create Event**
+```bash
+curl -X POST http://localhost:5000/api/events \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token_from_login>" \
   -d '{
-    "email": "john@example.com",
-    "password": "password123"
+    "title":"Meeting",
+    "startTime":"2024-01-15T14:00:00Z",
+    "endTime":"2024-01-15T15:00:00Z"
   }'
 ```
 
-**Refresh Token:**
+4. **Get All Events**
 ```bash
-curl -X POST http://localhost:5000/api/auth/refresh \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+curl -X GET http://localhost:5000/api/events \
+  -H "Authorization: Bearer <token>"
 ```
 
-### Using Postman
+5. **Get Events for Month**
+```bash
+curl -X GET "http://localhost:5000/api/events/month?year=2024&month=1" \
+  -H "Authorization: Bearer <token>"
+```
 
-1. Open Postman
-2. Create a new POST request
-3. Set URL: `http://localhost:5000/api/auth/register`
-4. Go to Body tab → Raw → JSON
-5. Paste the request body
-6. Click Send
+6. **Update Event**
+```bash
+curl -X PUT http://localhost:5000/api/events/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"title":"Updated Meeting"}'
+```
 
----
-
-## Error Handling
-
-All errors return appropriate HTTP status codes:
-
-| Status | Meaning |
-|--------|---------|
-| 200 | Success |
-| 201 | Created (registration) |
-| 400 | Bad request (validation error) |
-| 401 | Unauthorized (auth error) |
-| 409 | Conflict (user already exists) |
-| 500 | Server error |
+7. **Delete Event**
+```bash
+curl -X DELETE http://localhost:5000/api/events/1 \
+  -H "Authorization: Bearer <token>"
+```
 
 ---
 
-## Flow Example
+## Database Schema
 
-1. **User registers:**
-   ```
-   POST /register → Receives token
-   ```
+### Users Table
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(100) UNIQUE NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-2. **User logs in again:**
-   ```
-   POST /login → Receives new token
-   ```
+### User Preferences Table
+```sql
+CREATE TABLE user_preferences (
+  user_id INTEGER PRIMARY KEY REFERENCES users(id),
+  theme_color VARCHAR(50),
+  font_family VARCHAR(100),
+  chatbot_icon VARCHAR(100),
+  notifications_enabled BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
 
-3. **Token expires, user needs refresh:**
-   ```
-   POST /refresh with old token → Receives new token
-   ```
+### Events Table
+```sql
+CREATE TABLE events (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  start_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NOT NULL,
+  color VARCHAR(50),
+  recurring BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_user_id (user_id),
+  INDEX idx_start_time (start_time)
+);
+```
 
-4. **User logs out:**
-   ```
-   POST /logout → Clear token on client
-   ```
-
----
-
-## Database Requirements
-
-Authentication endpoints require PostgreSQL database to be running. See [SETUP.md](../SETUP.md) for database setup instructions.
-
-**Tables created automatically:**
-- `users` - Stores user credentials (bcrypt hashed)
-- `user_preferences` - Stores theme customization
+### Chatbot Conversations Table
+```sql
+CREATE TABLE chatbot_conversations (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  user_message TEXT NOT NULL,
+  bot_response TEXT,
+  intent VARCHAR(50),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_user_id (user_id)
+);
+```
 
 ---
 
 ## Security Notes
 
-- Passwords are hashed using bcrypt (10 rounds)
-- Tokens are signed with `JWT_SECRET` (change in production!)
-- Tokens are httpOnly recommended (client-side handling in frontend phase)
-- CORS is configured to only allow requests from `http://localhost:5173`
+- **Password Security:** All passwords are hashed using bcrypt with 10 salt rounds
+- **JWT Secret:** Never expose your `JWT_SECRET` in the frontend or version control
+- **CORS:** API is configured to accept requests only from `http://localhost:5173` (frontend)
+- **Token Storage:** Tokens are stored in localStorage (consider using httpOnly cookies in production)
+- **HTTPS:** Always use HTTPS in production
+
+---
+
+## Testing the API
+
+### Using Postman:
+1. Create a new request
+2. Set method to POST and URL to `http://localhost:5000/api/auth/register`
+3. Go to Body tab, select JSON, and paste:
+```json
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "TestPassword123",
+  "confirmPassword": "TestPassword123"
+}
+```
+4. Click Send
+5. Copy the token from the response
+6. For authenticated endpoints, add an Authorization header with value: `Bearer <token>`
+
+---
+

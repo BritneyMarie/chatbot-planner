@@ -52,4 +52,25 @@ export const authAPI = {
     api.post('/auth/refresh'),
 };
 
+// Events API calls
+export const eventsAPI = {
+  createEvent: (title, description, startTime, endTime, color) =>
+    api.post('/events', { title, description, startTime, endTime, color }),
+  
+  getEvents: (startDate = null, endDate = null) =>
+    api.get('/events', { params: { startDate, endDate } }),
+  
+  getEventsByDay: (date) =>
+    api.get('/events/day', { params: { date } }),
+  
+  getEventsByMonth: (year, month) =>
+    api.get('/events/month', { params: { year, month } }),
+  
+  updateEvent: (id, updates) =>
+    api.put(`/events/${id}`, updates),
+  
+  deleteEvent: (id) =>
+    api.delete(`/events/${id}`),
+};
+
 export default api;
