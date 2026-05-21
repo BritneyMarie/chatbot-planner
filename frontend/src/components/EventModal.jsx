@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import api from '../services/api';
+import { eventsAPI } from '../services/api';
 import RecurringEventForm from './RecurringEventForm';
 import TemplateSelector from './TemplateSelector';
 import * as eventService from '../services/eventService';
@@ -83,7 +83,7 @@ export const EventModal = ({ isOpen, onClose, onEventSaved, selectedDate, event 
     try {
       if (event) {
         // Update event
-        await api.put(`/events/${event.id}`, {
+        await eventsAPI.updateEvent(event.id, {
           title: formData.title,
           description: formData.description,
           startTime: start.toISOString(),
@@ -92,13 +92,13 @@ export const EventModal = ({ isOpen, onClose, onEventSaved, selectedDate, event 
         });
       } else {
         // Create event
-        await api.post('/events', {
-          title: formData.title,
-          description: formData.description,
-          startTime: start.toISOString(),
-          endTime: end.toISOString(),
-          color: formData.color,
-        });
+        await eventsAPI.createEvent(
+          formData.title,
+          formData.description,
+          start.toISOString(),
+          end.toISOString(),
+          formData.color
+        );
       }
 
       onEventSaved?.();
@@ -119,7 +119,7 @@ export const EventModal = ({ isOpen, onClose, onEventSaved, selectedDate, event 
 
     setLoading(true);
     try {
-      await api.delete(`/events/${event.id}`);
+      await eventsAPI.deleteEvent(event.id);
       onEventSaved?.();
       onClose();
     } catch (err) {
