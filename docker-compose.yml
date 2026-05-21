@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: chatbot-planner-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: chatbot_planner
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - chatbot-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chatbot-planner-backend
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: chatbot_planner
+      DB_USER: postgres
+      DB_PASSWORD: password123
+      NODE_ENV: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - chatbot-network
+    volumes:
+      - ./backend:/app
+    command: npm run dev
+
+volumes:
+  postgres_data:
+
+networks:
+  chatbot-network:
+    driver: bridge
