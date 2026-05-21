@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   chatbot_icon VARCHAR(50) DEFAULT '🤖',
   notifications_enabled BOOLEAN DEFAULT TRUE,
   language VARCHAR(10) DEFAULT 'en',
+  onboarding_completed BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -36,10 +37,10 @@ CREATE TABLE IF NOT EXISTS events (
   color VARCHAR(7),
   recurring BOOLEAN DEFAULT FALSE,
   recurrence_pattern VARCHAR(50),
+  reminder_minutes INTEGER DEFAULT 0,
+  reminder_enabled BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id),
-  INDEX idx_start_time (start_time)
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Chatbot conversations table
@@ -49,9 +50,33 @@ CREATE TABLE IF NOT EXISTS chatbot_conversations (
   user_message TEXT NOT NULL,
   bot_response TEXT NOT NULL,
   intent VARCHAR(50),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Notifications table
+CREATE TABLE IF NOT EXISTS notifications (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  message TEXT,
+  notification_type VARCHAR(50) DEFAULT 'reminder',
+  is_read BOOLEAN DEFAULT FALSE,
+  scheduled_time TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Event templates table
+CREATE TABLE IF NOT EXISTS event_templates (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  template_name VARCHAR(100) NOT NULL,
+  event_title VARCHAR(255) NOT NULL,
+  event_description TEXT,
+  event_color VARCHAR(7) DEFAULT '#667eea',
+  event_duration INTEGER DEFAULT 60,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id),
-  INDEX idx_created_at (created_at)
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create indexes for better query performance
@@ -59,3 +84,7 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_events_user_time ON events(user_id, start_time);
 CREATE INDEX IF NOT EXISTS idx_conversations_user ON chatbot_conversations(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user_read ON notifications(user_id, is_read);
+CREATE INDEX IF NOT EXISTS idx_notifications_scheduled ON notifications(user_id, scheduled_time);
+CREATE INDEX IF NOT EXISTS idx_templates_user ON event_templates(user_id);

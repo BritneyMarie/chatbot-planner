@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import api from '../services/api';
+import RecurringEventForm from './RecurringEventForm';
+import TemplateSelector from './TemplateSelector';
+import * as eventService from '../services/eventService';
+import * as templateService from '../services/templateService';
 import './EventModal.css';
 
 export const EventModal = ({ isOpen, onClose, onEventSaved, selectedDate, event = null }) => {
@@ -13,6 +17,8 @@ export const EventModal = ({ isOpen, onClose, onEventSaved, selectedDate, event 
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [eventType, setEventType] = useState('regular'); // 'regular' or 'recurring'
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
 
   useEffect(() => {
     if (selectedDate) {
@@ -122,13 +128,103 @@ export const EventModal = ({ isOpen, onClose, onEventSaved, selectedDate, event 
     }
   };
 
+  const handleSelectTemplate = (template) => {
+    const eventData = templateService.createEventFromTemplate(template, selectedDate || new Date());
+    setFormData({
+      title: eventData.title,
+      description: eventData.description,
+      startTime: format(new Date(eventData.startTime), "yyyy-MM-dd'T'HH:mm"),
+      endTime: format(new Date(eventData.endTime), "yyyy-MM-dd'T'HH:mm"),
+      color: eventData.color,
+    });
+    setShowTemplateSelector(false);
+  };
+
+  const handleCreateRecurringEvent = async (recurringData) => {
+    setError('');
+    setLoading(true);
+
+    try {
+      const start = new Date(recurringData.startTime);
+      const end = new Date(recurringData.endTime);
+
+      await eventService.createRecurringEvent({
+        title: recurringData.title,
+        description: recurringData.description,
+        startTime: start.toISOString(),
+        endTime: end.toISOString(),
+        color: recurringData.color,
+        recurrencePattern: recurringData.recurrencePattern,
+      });
+
+      onEventSaved?.();
+      onClose();
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to create recurring event');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (!isOpen) return null;
+
+  if (showTemplateSelector) {
+    return (
+      <div className="event-modal-overlay" onClick={onClose}>
+        <div className="event-modal template-modal" onClick={e => e.stopPropagation()}>
+          <TemplateSelector
+            onSelectTemplate={handleSelectTemplate}
+            onCancel={() => setShowTemplateSelector(false)}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (eventType === 'recurring' && !event) {
+    return (
+      <div className="event-modal-overlay" onClick={onClose}>
+        <div className="event-modal" onClick={e => e.stopPropagation()}>
+          <div className="event-modal-header">
+            <h2>Create Recurring Event</h2>
+            <button className="close-btn" onClick={onClose}>✕</button>
+          </div>
+          <RecurringEventForm
+            onSubmit={handleCreateRecurringEvent}
+            onCancel={() => setEventType('regular')}
+            initialData={{
+              startTime: format(selectedDate || new Date(), "yyyy-MM-dd'T'HH:mm"),
+              endTime: format(new Date((selectedDate || new Date()).getTime() + 3600000), "yyyy-MM-dd'T'HH:mm"),
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="event-modal-overlay" onClick={onClose}>
       <div className="event-modal" onClick={e => e.stopPropagation()}>
         <div className="event-modal-header">
-          <h2>{event ? 'Edit Event' : 'New Event'}</h2>
+          <div className="modal-title-section">
+            <h2>{event ? 'Edit Event' : 'New Event'}</h2>
+            {!event && (
+              <div className="event-type-tabs">
+                <button
+                  className={`tab-btn ${eventType === 'regular' ? 'active' : ''}`}
+                  onClick={() => setEventType('regular')}
+                >
+                  📅 Regular
+                </button>
+                <button
+                  className={`tab-btn ${eventType === 'recurring' ? 'active' : ''}`}
+                  onClick={() => setEventType('recurring')}
+                >
+                  🔄 Recurring
+                </button>
+              </div>
+            )}
+          </div>
           <button className="close-btn" onClick={onClose}>✕</button>
         </div>
 
@@ -205,6 +301,15 @@ export const EventModal = ({ isOpen, onClose, onEventSaved, selectedDate, event 
           </div>
 
           <div className="form-actions">
+            {!event && (
+              <button
+                type="button"
+                className="btn-template"
+                onClick={() => setShowTemplateSelector(true)}
+              >
+                📋 Use Template
+              </button>
+            )}
             <button type="button" className="btn-cancel" onClick={onClose}>
               Cancel
             </button>

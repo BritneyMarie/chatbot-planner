@@ -104,7 +104,7 @@ For complete API documentation, see [API_DOCS.md](backend/API_DOCS.md)
 - `POST /api/auth/logout` — Logout user
 - `POST /api/auth/refresh` — Refresh JWT token
 
-### Events (Phase 4 🔄)
+### Events (Phase 4 ✅)
 - `GET /api/events` — List user's events
 - `GET /api/events/day?date=YYYY-MM-DD` — Get events for specific day
 - `GET /api/events/month?year=YYYY&month=MM` — Get events for specific month
@@ -112,24 +112,58 @@ For complete API documentation, see [API_DOCS.md](backend/API_DOCS.md)
 - `PUT /api/events/:id` — Update event
 - `DELETE /api/events/:id` — Delete event
 
-### Chatbot (Phase 6 ⏳)
+### Advanced Calendar (Phase 7C 🔄)
+- `POST /api/events/recurring` — Create recurring event (daily, weekly, biweekly, monthly, yearly)
+- `GET /api/events/recurring?startDate=ISO&endDate=ISO` — Get recurring events with expanded instances
+- `GET /api/events/search?q=query` — Search events by title
+- `GET /api/events/filter?color=hex&search=term&startDate=ISO&endDate=ISO&recurring=bool` — Filter events
+- `GET /api/events/by-color?color=hex` — Get events by color
+
+### Chatbot (Phase 6 ✅)
 - `POST /api/chatbot/message` — Send message to chatbot
 - `GET /api/chatbot/history` — Get conversation history
+- `DELETE /api/chatbot/history` — Clear conversation history
 
-### User (Phase 7 ⏳)
-- `GET /api/user/preferences` — Get user theme preferences
-- `PUT /api/user/preferences` — Update theme preferences
+### Chatbot Enhancements (Phase 7A ✅)
+- `POST /api/chatbot/create-event` — Create event from chat message
+- `GET /api/chatbot/suggestions` — Get smart suggestions
+
+### Notifications (Phase 7B 🔄)
+- `GET /api/notifications/unread` — Get unread notifications
+- `GET /api/notifications` — Get all notifications (paginated)
+- `GET /api/notifications/count/unread` — Get unread count
+- `PUT /api/notifications/:notificationId/read` — Mark notification as read
+- `PUT /api/notifications/read/all` — Mark all as read
+- `DELETE /api/notifications/:notificationId` — Delete notification
+- `DELETE /api/notifications/all` — Delete all notifications
+
+### Event Templates (Phase 7C 🔄)
+- `GET /api/templates` — Get all templates (user + default)
+- `GET /api/templates/user` — Get user templates only
+- `GET /api/templates/defaults` — Get default templates
+- `POST /api/templates` — Create new template
+- `GET /api/templates/:id` — Get single template
+- `PUT /api/templates/:id` — Update template
+- `DELETE /api/templates/:id` — Delete template
+
+### User (Phase 5 ✅)
+- `GET /api/user/preferences` — Get user preferences (theme, language, notifications)
+- `PUT /api/user/preferences` — Update user preferences
+- `POST /api/user/onboarding/complete` — Mark onboarding as completed
 
 ## Features (Roadmap)
 
 - ✅ Phase 1: Project structure & setup
 - ✅ Phase 2: Authentication (JWT + bcrypt)
 - ✅ Phase 3: Frontend auth & layout
-- 🔄 Phase 4: Calendar (Day/Week/Month/Year views) — IN PROGRESS
-- ⏳ Phase 5: Onboarding tour & settings
-- ⏳ Phase 6: AI Chatbot integration (OpenAI)
-- ⏳ Phase 7: Theme customization
-- ⏳ Phase 8: Testing & deployment
+- ✅ Phase 4: Calendar (Day/Week/Month/Year views) — COMPLETE
+- ✅ Phase 5: Onboarding tour & settings — COMPLETE
+- ✅ Phase 6: AI Chatbot integration (OpenAI) — COMPLETE
+- ✅ Phase 7A: Enhanced Chatbot (event creation, smart suggestions) — COMPLETE
+- ✅ Phase 7B: Notifications (in-app alerts, reminders) — COMPLETE
+- 🔄 Phase 7C: Advanced calendar features (recurring events, templates, filtering) — IN PROGRESS
+- ⏳ Phase 7D: UI/UX Polish (animations, responsive improvements)
+- ⏳ Phase 7E: Performance Optimization (caching, lazy loading)
 
 ## Environment Variables
 
@@ -205,5 +239,5 @@ ISC
 
 ---
 
-**Progress Update:** Phase 4 complete! Calendar component with day/week/month/year views is now functional.
-**Next Steps:** Phase 5 - Onboarding tour & settings integration.
+**Progress Update:** Phase 7B notifications system is now live with in-app alerts, toast notifications, and notification history!
+**Next Steps:** Phase 7C - Advanced calendar features (recurring events, event templates, filtering)

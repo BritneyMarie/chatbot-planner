@@ -5,7 +5,12 @@ const {
   getEventsByDayHandler,
   getEventsByMonthHandler,
   updateEventHandler, 
-  deleteEventHandler 
+  deleteEventHandler,
+  createRecurringEventHandler,
+  getFilteredEventsHandler,
+  searchEventsHandler,
+  getEventsByColorHandler,
+  getRecurringEventsHandler,
 } = require('../controllers/eventController');
 const { verifyToken } = require('../middleware/auth');
 
@@ -17,8 +22,23 @@ router.use(verifyToken);
 // Create event
 router.post('/', createEventHandler);
 
+// Create recurring event
+router.post('/recurring', createRecurringEventHandler);
+
 // Get all events (with optional date range)
 router.get('/', getEventsHandler);
+
+// Get recurring events (expanded with instances)
+router.get('/recurring', getRecurringEventsHandler);
+
+// Search events
+router.get('/search', searchEventsHandler);
+
+// Get events by color
+router.get('/by-color', getEventsByColorHandler);
+
+// Get filtered events
+router.get('/filter', getFilteredEventsHandler);
 
 // Get events for a specific day
 router.get('/day', getEventsByDayHandler);

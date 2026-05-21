@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, startOfWeek, endOfWeek, eachDayOfInterval as eachDayOfIntervalWeek, addMonths, subMonths, addDays, subDays } from 'date-fns';
 import api from '../services/api';
+import CalendarFilter from './CalendarFilter';
 import './Calendar.css';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -12,11 +13,18 @@ export const Calendar = ({ onEventClick }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({
+    color: '',
+    search: '',
+    startDate: '',
+    endDate: '',
+    recurring: false,
+  });
 
   // Fetch events for current date
   useEffect(() => {
     fetchEvents();
-  }, [currentDate, view]);
+  }, [currentDate, view, filters]);
 
   const fetchEvents = async () => {
     try {
@@ -26,11 +34,23 @@ export const Calendar = ({ onEventClick }) => {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
 
-      // Fetch events for the month
-      const response = await api.get('/events/month', {
-        params: { year, month }
-      });
+      // Build request
+      let endpoint = '/events/month';
+      const params = { year, month };
 
+      // If filters are active, use filter endpoint
+      if (filters.color || filters.search || filters.startDate || filters.endDate || filters.recurring) {
+        endpoint = '/events/filter';
+        delete params.year;
+        delete params.month;
+        if (filters.color) params.color = filters.color;
+        if (filters.search) params.search = filters.search;
+        if (filters.startDate) params.startDate = filters.startDate;
+        if (filters.endDate) params.endDate = filters.endDate;
+        if (filters.recurring) params.recurring = true;
+      }
+
+      const response = await api.get(endpoint, { params });
       setEvents(response.data.events || []);
     } catch (err) {
       console.error('Failed to fetch events:', err);
@@ -45,6 +65,14 @@ export const Calendar = ({ onEventClick }) => {
       const eventDate = new Date(event.start_time);
       return isSameDay(eventDate, date);
     });
+  };
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  const handleSearch = (query) => {
+    setFilters(prev => ({ ...prev, search: query }));
   };
 
   // Month view
@@ -272,6 +300,11 @@ export const Calendar = ({ onEventClick }) => {
           Today
         </button>
       </div>
+
+      <CalendarFilter
+        onFilterChange={handleFilterChange}
+        onSearch={handleSearch}
+      />
 
       {error && <div className="calendar-error">{error}</div>}
       {loading && <div className="calendar-loading">Loading events...</div>}
