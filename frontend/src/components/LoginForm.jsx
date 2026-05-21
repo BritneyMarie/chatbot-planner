@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export const LoginForm = () => {
@@ -83,9 +83,9 @@ export const LoginForm = () => {
 
       <p className="text-center text-sm text-gray-600 mt-6">
         Don't have an account?{' '}
-        <a href="/register" className="text-purple-600 hover:text-purple-700 font-semibold">
+        <Link to="/register" className="text-purple-600 hover:text-purple-700 font-semibold">
           Register here
-        </a>
+        </Link>
       </p>
     </form>
   );

@@ -15,19 +15,19 @@ const RouteLoader = () => (
 
 // Code-split routes with lazy loading
 // These are loaded on-demand when the route is accessed
-const LoginPage = lazy(() => 
+const LoginPage = lazy(() =>
   import(/* webpackChunkName: "auth" */ './pages/LoginPage')
 );
 
-const HomePage = lazy(() => 
+const HomePage = lazy(() =>
   import(/* webpackChunkName: "home" */ './pages/HomePage')
 );
 
-const SettingsPage = lazy(() => 
+const SettingsPage = lazy(() =>
   import(/* webpackChunkName: "settings" */ './pages/SettingsPage')
 );
 
-const Onboarding = lazy(() => 
+const Onboarding = lazy(() =>
   import(/* webpackChunkName: "onboarding" */ './components/Onboarding')
 );
 
@@ -35,21 +35,21 @@ function AppContent() {
   return (
     <Routes>
       {/* Public routes */}
-      <Route 
-        path="/login" 
+      <Route
+        path="/login"
         element={
           <Suspense fallback={<RouteLoader />}>
             <LoginPage />
           </Suspense>
-        } 
+        }
       />
-      <Route 
-        path="/register" 
+      <Route
+        path="/register"
         element={
           <Suspense fallback={<RouteLoader />}>
             <LoginPage />
           </Suspense>
-        } 
+        }
       />
 
       {/* Protected routes */}

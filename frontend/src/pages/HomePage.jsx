@@ -30,13 +30,11 @@ export const HomePage = () => {
     const checkNotifications = async () => {
       try {
         const data = await notificationService.getUnreadNotifications();
-        // Show toast for new unread notifications
         if (data.unreadCount > 0) {
-          // Only show toast for recently triggered notifications
           const recentNotifications = data.notifications.filter(n => {
             const notifTime = new Date(n.scheduled_time).getTime();
             const now = new Date().getTime();
-            return (now - notifTime) < 300000; // Within 5 minutes
+            return (now - notifTime) < 300000;
           });
 
           if (recentNotifications.length > 0) {
@@ -49,9 +47,7 @@ export const HomePage = () => {
       }
     };
 
-    // Check every 30 seconds
     const interval = setInterval(checkNotifications, 30000);
-    // Check immediately on mount
     checkNotifications();
 
     return () => clearInterval(interval);
@@ -68,13 +64,12 @@ export const HomePage = () => {
   };
 
   const handleEventSaved = () => {
-    // Refresh calendar
     setCalendarRefresh(prev => prev + 1);
     showToast('Event created successfully!', 'success');
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 

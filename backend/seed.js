@@ -1,124 +1,97 @@
-/**
- * Seed script to populate test users and sample data
- * Run with: npm run seed
- */
-
-const pool = require('./src/config/database');
+require('dotenv').config();
+const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 
-const testUsers = [
-  {
-    email: 'user1@calender.com',
-    password: 'Userone1@calender',
-    username: 'User One'
-  },
-  {
-    email: 'user2@calender.com',
-    password: 'Usertwo2@calender',
-    username: 'User Two'
-  },
-  {
-    email: 'user3@calender.com',
-    password: 'Userthree3@calender',
-    username: 'User Three'
-  }
+const pool = new Pool({
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD || 'password123',
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT || 5432,
+  database: process.env.DB_NAME || 'chatbot_planner',
+});
+
+const users = [
+  { username: 'User One', email: 'user1@calender.com', password: 'Userone1@calender' },
+  { username: 'User Two', email: 'user2@calender.com', password: 'Usertwo2@calender' },
+  { username: 'User Three', email: 'user3@calender.com', password: 'Userthree3@calender' },
 ];
 
-async function seedDatabase() {
-  const client = await pool.connect();
-  
+const createEvents = (userId) => {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  return [
+    {
+      title: 'Team Standup',
+      description: 'Daily team sync',
+      start_time: new Date(today.getTime() + 9 * 3600000),
+      end_time: new Date(today.getTime() + 10 * 3600000),
+      color: '#667eea',
+    },
+    {
+      title: 'Lunch Break',
+      description: 'Time to eat',
+      start_time: new Date(today.getTime() + 36 * 3600000),
+      end_time: new Date(today.getTime() + 37 * 3600000),
+      color: '#667eea',
+    },
+    {
+      title: 'Project Review',
+      description: 'Review progress',
+      start_time: new Date(today.getTime() + 62 * 3600000),
+      end_time: new Date(today.getTime() + 63 * 3600000),
+      color: '#667eea',
+    },
+    {
+      title: 'Team Meeting',
+      description: 'Weekly sync',
+      start_time: new Date(today.getTime() + 82 * 3600000),
+      end_time: new Date(today.getTime() + 83 * 3600000),
+      color: '#667eea',
+    },
+  ];
+};
+
+async function seed() {
   try {
-    console.log('🌱 Starting database seeding...');
-    
-    // Start transaction
-    await client.query('BEGIN');
-    
-    // Clear existing seed data (optional - uncomment to reset)
-    // await client.query('DELETE FROM users WHERE email LIKE \'user%@calender.com\'');
-    
-    for (const user of testUsers) {
-      try {
-        // Check if user already exists
-        const existingUser = await client.query(
-          'SELECT id FROM users WHERE email = $1',
-          [user.email]
+    console.log('Seeding database...');
+
+    for (const userData of users) {
+      const hash = await bcrypt.hash(userData.password, 10);
+
+      const userResult = await pool.query(
+        `INSERT INTO users (username, email, password_hash)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (email) DO UPDATE SET password_hash = $3
+         RETURNING id`,
+        [userData.username, userData.email, hash]
+      );
+
+      const userId = userResult.rows[0].id;
+
+      await pool.query(
+        `INSERT INTO user_preferences (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING`,
+        [userId]
+      );
+
+      const events = createEvents(userId);
+      for (const event of events) {
+        await pool.query(
+          `INSERT INTO events (user_id, title, description, start_time, end_time, color)
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          [userId, event.title, event.description, event.start_time, event.end_time, event.color]
         );
-        
-        if (existingUser.rows.length > 0) {
-          console.log(`⏭️  User ${user.email} already exists, skipping...`);
-          continue;
-        }
-        
-        // Hash password
-        const hashedPassword = await bcrypt.hash(user.password, 10);
-        
-        // Insert user
-        const userResult = await client.query(
-          'INSERT INTO users (username, email, password_hash, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW()) RETURNING id',
-          [user.username, user.email, hashedPassword]
-        );
-        
-        const userId = userResult.rows[0].id;
-        console.log(`✅ Created user: ${user.email} (ID: ${userId})`);
-        
-        // Insert user preferences
-        await client.query(
-          `INSERT INTO user_preferences (user_id, theme_primary_color, theme_secondary_color, notifications_enabled, language, created_at, updated_at)
-           VALUES ($1, '#667eea', '#764ba2', true, 'en', NOW(), NOW())`,
-          [userId]
-        );
-        console.log(`✅ Created preferences for user ${userId}`);
-        
-        // Insert sample events
-        const eventDates = [
-          { title: 'Team Standup', desc: 'Daily team sync', offset: 0, time: '09:00' },
-          { title: 'Lunch Break', desc: 'Time to eat', offset: 1, time: '12:00' },
-          { title: 'Project Review', desc: 'Review progress', offset: 2, time: '14:00' },
-          { title: 'Team Meeting', desc: 'Weekly sync', offset: 3, time: '10:00' }
-        ];
-        
-        for (const event of eventDates) {
-          const eventDate = new Date();
-          eventDate.setDate(eventDate.getDate() + event.offset);
-          
-          const startTime = new Date(eventDate);
-          const [hours, minutes] = event.time.split(':');
-          startTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-          
-          const endTime = new Date(startTime);
-          endTime.setHours(endTime.getHours() + 1);
-          
-          await client.query(
-            `INSERT INTO events (user_id, title, description, start_time, end_time, color, created_at, updated_at)
-             VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())`,
-            [userId, event.title, event.desc, startTime, endTime, '#667eea']
-          );
-        }
-        console.log(`✅ Created 4 sample events for user ${userId}`);
-        
-      } catch (error) {
-        console.error(`❌ Error creating user ${user.email}:`, error.message);
       }
+
+      console.log(`  Created user: ${userData.email}`);
     }
-    
-    // Commit transaction
-    await client.query('COMMIT');
-    console.log('\n✨ Database seeding completed successfully!');
-    console.log('\n📋 Test Users:');
-    testUsers.forEach(user => {
-      console.log(`   Email: ${user.email}`);
-      console.log(`   Password: ${user.password}`);
-      console.log(`   Username: ${user.username}\n`);
-    });
-    
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('❌ Seeding failed:', error);
-    process.exit(1);
+
+    console.log('Seed complete.');
+  } catch (err) {
+    console.error('Seed error:', err.message);
   } finally {
-    client.release();
-    pool.end();
+    await pool.end();
   }
 }
 
-seedDatabase();
+seed();
