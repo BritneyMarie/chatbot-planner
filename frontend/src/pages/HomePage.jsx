@@ -10,6 +10,10 @@ import ChatBotButton from '../components/ChatBotButton';
 import Toast from '../components/Toast';
 import NotificationCenter from '../components/NotificationCenter';
 import NotificationBadge from '../components/NotificationBadge';
+import HabitTracker from '../components/HabitTracker';
+import GoalsList from '../components/GoalsList';
+import TodoList from '../components/TodoList';
+import PriorityNotes from '../components/PriorityNotes';
 import notificationService from '../services/notificationService';
 
 export const HomePage = () => {
@@ -78,36 +82,49 @@ export const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="min-h-screen p-8" style={{ background: 'var(--color-bg, #F5F0EB)' }}>
       {/* Navigation Bar */}
-      <nav className="max-w-6xl mx-auto mb-8 flex justify-between items-center bg-white rounded-lg shadow-lg p-4">
+      <nav className="max-w-6xl mx-auto mb-8" style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        background: 'var(--color-card, #FFFFFF)', borderRadius: '16px',
+        boxShadow: '0 0 20px rgba(0,0,0,.08)', padding: '12px 20px'
+      }}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">📋 Planner</h1>
+          <h1 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--color-text, #3D3326)' }}>Planner</h1>
         </div>
-        <div className="flex gap-4 items-center">
-          <span className="text-gray-600 text-sm">{user?.username}</span>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <span style={{ color: 'var(--color-text-muted, #8A7E72)', fontSize: '14px' }}>{user?.username}</span>
           <NotificationBadge onClick={() => setShowNotificationCenter(true)} />
           <button
             onClick={() => navigate('/settings')}
-            className="px-4 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-medium hover:bg-indigo-200 transition"
+            style={{
+              background: 'var(--color-highlight, #ECC4C3)',
+              color: 'var(--color-accent, #575527)',
+              borderRadius: '8px', border: 'none', padding: '8px 16px',
+              fontWeight: 600, cursor: 'pointer', fontSize: '14px'
+            }}
           >
-            ⚙️ Settings
+            Settings
           </button>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 rounded-lg bg-red-100 text-red-700 font-medium hover:bg-red-200 transition"
+            style={{
+              background: '#ffe0e0', color: '#c33',
+              borderRadius: '8px', border: 'none', padding: '8px 16px',
+              fontWeight: 600, cursor: 'pointer', fontSize: '14px'
+            }}
           >
-            🚪 Logout
+            Logout
           </button>
         </div>
       </nav>
 
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-gray-800 mb-2">
-          Welcome, {user?.username || 'User'}! 👋
+        <h2 style={{ fontSize: '32px', fontWeight: 700, color: 'var(--color-text, #3D3326)', marginBottom: '6px' }}>
+          Welcome, {user?.username || 'User'}!
         </h2>
-        <p className="text-gray-600 mb-8">
-          You're now logged in to the Chatbot-Assisted Weekly Planner
+        <p style={{ color: 'var(--color-text-muted, #8A7E72)', marginBottom: '24px', fontSize: '15px' }}>
+          Your personal planner dashboard
         </p>
 
         {/* Calendar component */}
@@ -115,44 +132,17 @@ export const HomePage = () => {
           <Calendar key={calendarRefresh} onEventClick={handleCalendarEventClick} />
         </div>
 
-        {/* Feature overview */}
-        <div className="mt-12 bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">✨ Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-4xl mb-2">📅</div>
-              <h3 className="font-semibold text-gray-700">Multi-View Calendar</h3>
-              <p className="text-sm text-gray-600 mt-2">Day, week, month, and year views</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl mb-2">🤖</div>
-              <h3 className="font-semibold text-gray-700">AI Chatbot</h3>
-              <p className="text-sm text-gray-600 mt-2">Weather, jokes, trivia, event creation</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl mb-2">🎨</div>
-              <h3 className="font-semibold text-gray-700">Customizable</h3>
-              <p className="text-sm text-gray-600 mt-2">Colors, fonts, and themes</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Progress */}
-        <div className="mt-12 bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-          <h3 className="font-bold text-indigo-900 mb-3">🚀 Implementation Progress</h3>
-          <div className="space-y-2 text-sm text-indigo-800">
-            <p>✅ Phase 1: Project Structure & Setup</p>
-            <p>✅ Phase 2: Database & Authentication</p>
-            <p>✅ Phase 3: Frontend Auth & Layout</p>
-            <p>✅ Phase 4: Calendar Component (Day/Week/Month/Year views)</p>
-            <p>✅ Phase 5: Onboarding Tour & Settings</p>
-            <p>✅ Phase 6: Chatbot Integration (OpenAI)</p>
-            <p>✅ Phase 7A: Enhanced Chatbot (event creation, smart suggestions)</p>
-            <p>🔄 Phase 7B: Notifications System — IN PROGRESS</p>
-            <p>⏳ Phase 7C: Advanced calendar features</p>
-            <p>⏳ Phase 7D: UI/UX Polish</p>
-            <p>⏳ Phase 7E: Performance Optimization</p>
-          </div>
+        {/* Planner Features Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: '24px',
+          marginTop: '32px',
+        }}>
+          <HabitTracker />
+          <GoalsList />
+          <TodoList />
+          <PriorityNotes />
         </div>
       </div>
 

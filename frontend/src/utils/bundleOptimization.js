@@ -15,7 +15,7 @@ export const getCriticalCSS = () => {
     html, body, #root { width: 100%; height: 100%; }
     body { font-family: 'Poppins', sans-serif; }
     .route-loader { display: flex; align-items: center; justify-content: center; 
-                   min-height: 100vh; background: linear-gradient(135deg, #667eea, #764ba2); }
+                   min-height: 100vh; background: linear-gradient(135deg, #B97D7B, #928E5E); }
   `;
 };
 

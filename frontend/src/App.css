@@ -98,11 +98,11 @@ html, body, #root {
 }
 
 .from-blue-50 {
-  --tw-gradient-stops: rgba(240, 249, 255, 1), var(--tw-gradient-to, rgba(240, 249, 255, 0));
+  --tw-gradient-stops: rgba(255, 240, 252, 1), var(--tw-gradient-to, rgba(255, 240, 252, 0));
 }
 
 .to-indigo-100 {
-  --tw-gradient-to: rgba(224, 231, 255, 1);
+  --tw-gradient-to: rgba(253, 224, 248, 1);
 }
 
 /* Form inputs */
@@ -118,8 +118,8 @@ html, body, #root {
 
 .form-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  border-color: var(--color-primary, #B97D7B);
+  box-shadow: 0 0 0 3px rgba(185, 125, 123, 0.15);
   transform: translateY(-2px);
 }
 
@@ -134,12 +134,13 @@ html, body, #root {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary, #B97D7B);
   color: white;
 }
 
 .btn-primary:hover {
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  background: var(--color-secondary, #928E5E);
+  box-shadow: 0 5px 15px rgba(185, 125, 123, 0.4);
   transform: translateY(-2px);
 }
 
@@ -233,7 +234,7 @@ html, body, #root {
   justify-content: center;
   min-height: 100vh;
   gap: 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary, #B97D7B);
   color: white;
   animation: pageEnter 0.3s ease-in;
 }

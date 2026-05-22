@@ -30,8 +30,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary, #B97D7B);
+  box-shadow: 0 0 0 3px rgba(185, 125, 123, 0.1);
 }
 
 .filter-toggle {
@@ -48,17 +48,17 @@
 }
 
 .filter-toggle:hover {
-  border-color: #667eea;
-  background: #f0f4ff;
+  border-color: var(--color-primary, #B97D7B);
+  background: var(--color-highlight, #ECC4C3);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .filter-toggle.active {
-  background: #667eea;
+  background: var(--color-primary, #B97D7B);
   color: white;
-  border-color: #667eea;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  border-color: var(--color-primary, #B97D7B);
+  box-shadow: 0 4px 12px rgba(185, 125, 123, 0.3);
 }
 
 .filter-toggle.has-filters {
@@ -142,8 +142,8 @@
 
 .date-range input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary, #B97D7B);
+  box-shadow: 0 0 0 3px rgba(185, 125, 123, 0.1);
 }
 
 .separator {

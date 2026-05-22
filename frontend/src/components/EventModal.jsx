@@ -13,7 +13,7 @@ export const EventModal = ({ isOpen, onClose, onEventSaved, selectedDate, event 
     description: '',
     startTime: '',
     endTime: '',
-    color: '#667eea',
+    color: '#B97D7B',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ export const EventModal = ({ isOpen, onClose, onEventSaved, selectedDate, event 
           description: event.description || '',
           startTime: format(new Date(event.start_time), "yyyy-MM-dd'T'HH:mm"),
           endTime: format(new Date(event.end_time), "yyyy-MM-dd'T'HH:mm"),
-          color: event.color || '#667eea',
+          color: event.color || '#B97D7B',
         });
       } else {
         // Create mode

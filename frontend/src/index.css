@@ -93,6 +93,6 @@ p {
 
 /* Focus styles for accessibility */
 *:focus-visible {
-  outline: 2px solid #667eea;
+  outline: 2px solid var(--color-primary, #B97D7B);
   outline-offset: 2px;
 }

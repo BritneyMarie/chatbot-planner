@@ -12,8 +12,8 @@ const CalendarFilter = ({ onFilterChange, onSearch, availableColors = [] }) => {
   const [showRecurringOnly, setShowRecurringOnly] = useState(false);
 
   const defaultColors = [
-    '#667eea',
-    '#764ba2',
+    '#B97D7B',
+    '#928E5E',
     '#f97316',
     '#ef4444',
     '#10b981',

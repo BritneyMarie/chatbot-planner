@@ -10,7 +10,7 @@ const TemplateSelector = ({ onSelectTemplate, onCreateTemplate, onCancel }) => {
     name: '',
     title: '',
     description: '',
-    color: '#667eea',
+    color: '#B97D7B',
     duration: 60,
   });
   const [loading, setLoading] = useState(false);
@@ -58,7 +58,7 @@ const TemplateSelector = ({ onSelectTemplate, onCreateTemplate, onCancel }) => {
         name: '',
         title: '',
         description: '',
-        color: '#667eea',
+        color: '#B97D7B',
         duration: 60,
       });
       setShowCreateForm(false);
@@ -114,7 +114,7 @@ const TemplateSelector = ({ onSelectTemplate, onCreateTemplate, onCancel }) => {
               >
                 <div
                   className="template-color"
-                  style={{ backgroundColor: template.event_color || template.eventColor || '#667eea' }}
+                  style={{ backgroundColor: template.event_color || template.eventColor || '#B97D7B' }}
                 />
                 <div className="template-info">
                   <h4>{template.template_name || template.templateName}</h4>

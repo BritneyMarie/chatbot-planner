@@ -124,7 +124,7 @@ export const createEventFromTemplate = (template, startTime) => {
   return {
     title: template.event_title || template.eventTitle,
     description: template.event_description || template.eventDescription || '',
-    color: template.event_color || template.eventColor || '#667eea',
+    color: template.event_color || template.eventColor || '#B97D7B',
     startTime: new Date(startTime).toISOString(),
     endTime: new Date(new Date(startTime).getTime() + (template.event_duration || template.eventDuration || 60) * 60000).toISOString(),
   };

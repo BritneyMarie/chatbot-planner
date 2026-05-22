@@ -8,7 +8,7 @@ const RecurringEventForm = ({ onSubmit, onCancel, initialData = null }) => {
       description: '',
       startTime: '',
       endTime: '',
-      color: '#667eea',
+      color: '#B97D7B',
       recurrencePattern: 'weekly',
     }
   );

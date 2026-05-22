@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
-import api from '../services/api';
+import { useNavigate } from 'react-router-dom';
+import { useTheme, PALETTES } from '../context/ThemeContext';
 import './SettingsPage.css';
 
 const SettingsPage = () => {
-  const { theme, updateTheme } = useTheme();
+  const { theme, updateTheme, switchPalette } = useTheme();
+  const navigate = useNavigate();
   const [preferences, setPreferences] = useState({
     primaryColor: theme.primaryColor,
     secondaryColor: theme.secondaryColor,
@@ -22,16 +23,28 @@ const SettingsPage = () => {
     }));
   };
 
+  const handlePaletteSelect = (paletteKey) => {
+    switchPalette(paletteKey);
+    const palette = PALETTES[paletteKey];
+    setPreferences(prev => ({
+      ...prev,
+      primaryColor: palette.primaryColor,
+      secondaryColor: palette.secondaryColor,
+    }));
+    setMessage({ type: 'success', text: `${palette.emoji} Switched to ${palette.name}!` });
+    setTimeout(() => setMessage(null), 2000);
+  };
+
   const handleSave = async () => {
     setSaving(true);
     setMessage(null);
     try {
       await updateTheme(preferences);
-      setMessage({ type: 'success', text: '✅ Settings saved successfully!' });
+      setMessage({ type: 'success', text: 'Settings saved successfully!' });
       setTimeout(() => setMessage(null), 3000);
     } catch (err) {
       console.error('Error saving settings:', err);
-      setMessage({ type: 'error', text: '❌ Failed to save settings' });
+      setMessage({ type: 'error', text: 'Failed to save settings' });
     } finally {
       setSaving(false);
     }
@@ -52,7 +65,7 @@ const SettingsPage = () => {
     <div className="settings-page">
       <div className="settings-container">
         <div className="settings-header">
-          <h1>⚙️ Settings</h1>
+          <h1>Settings</h1>
           <p>Customize your experience and manage your preferences</p>
         </div>
 
@@ -63,11 +76,42 @@ const SettingsPage = () => {
         )}
 
         <div className="settings-content">
+          {/* Palette Selector */}
+          <section className="settings-section">
+            <div className="section-header">
+              <h2>Color Palettes</h2>
+              <p>Choose a preset palette for your planner</p>
+            </div>
+
+            <div className="palette-grid">
+              {Object.entries(PALETTES).map(([key, palette]) => (
+                <div
+                  key={key}
+                  className={`palette-card ${theme.palette === key ? 'active' : ''}`}
+                  onClick={() => handlePaletteSelect(key)}
+                >
+                  <div className="palette-colors">
+                    <div className="palette-swatch" style={{ background: palette.primaryColor }} />
+                    <div className="palette-swatch" style={{ background: palette.secondaryColor }} />
+                    <div className="palette-swatch" style={{ background: palette.accentColor }} />
+                    <div className="palette-swatch" style={{ background: palette.highlightColor }} />
+                    <div className="palette-swatch" style={{ background: palette.bgColor }} />
+                  </div>
+                  <div className="palette-emoji">{palette.emoji}</div>
+                  <div className="palette-name">
+                    {palette.name}
+                    {theme.palette === key && <span className="palette-check">&#10003;</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {/* Theme Settings */}
           <section className="settings-section">
             <div className="section-header">
-              <h2>🎨 Theme & Appearance</h2>
-              <p>Personalize how the app looks</p>
+              <h2>Theme & Appearance</h2>
+              <p>Fine-tune colors and fonts</p>
             </div>
 
             <div className="settings-group">
@@ -134,7 +178,7 @@ const SettingsPage = () => {
           {/* Notification Settings */}
           <section className="settings-section">
             <div className="section-header">
-              <h2>🔔 Notifications</h2>
+              <h2>Notifications</h2>
               <p>Control how you receive updates</p>
             </div>
 
@@ -161,7 +205,7 @@ const SettingsPage = () => {
           {/* Language Settings */}
           <section className="settings-section">
             <div className="section-header">
-              <h2>🌍 Language & Region</h2>
+              <h2>Language & Region</h2>
               <p>Choose your preferred language</p>
             </div>
 
@@ -178,32 +222,12 @@ const SettingsPage = () => {
                     className="language-select"
                   >
                     <option value="en">English</option>
-                    <option value="es">Español (Spanish)</option>
-                    <option value="fr">Français (French)</option>
+                    <option value="es">Espa&#241;ol (Spanish)</option>
+                    <option value="fr">Fran&#231;ais (French)</option>
                     <option value="de">Deutsch (German)</option>
-                    <option value="pt">Português (Portuguese)</option>
+                    <option value="pt">Portugu&#234;s (Portuguese)</option>
                   </select>
                 </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Account Settings */}
-          <section className="settings-section">
-            <div className="section-header">
-              <h2>👤 Account</h2>
-              <p>Manage your account information</p>
-            </div>
-
-            <div className="settings-group">
-              <div className="setting-item info-box">
-                <p>📌 More account features coming soon...</p>
-                <ul className="feature-list">
-                  <li>Change Password</li>
-                  <li>Two-Factor Authentication</li>
-                  <li>Connected Devices</li>
-                  <li>Data Export</li>
-                </ul>
               </div>
             </div>
           </section>
@@ -211,8 +235,8 @@ const SettingsPage = () => {
           {/* About Settings */}
           <section className="settings-section">
             <div className="section-header">
-              <h2>ℹ️ About</h2>
-              <p>App information and links</p>
+              <h2>About</h2>
+              <p>App information</p>
             </div>
 
             <div className="settings-group">
@@ -220,10 +244,6 @@ const SettingsPage = () => {
                 <div className="info-row">
                   <span>App Version:</span>
                   <strong>1.0.0</strong>
-                </div>
-                <div className="info-row">
-                  <span>Phase:</span>
-                  <strong>Phase 5 (Onboarding & Settings) ✅</strong>
                 </div>
                 <div className="info-row">
                   <span>License:</span>
@@ -238,17 +258,23 @@ const SettingsPage = () => {
         <div className="settings-actions">
           <button
             className="btn btn-secondary"
+            onClick={() => navigate('/')}
+          >
+            &larr; Back
+          </button>
+          <button
+            className="btn btn-secondary"
             onClick={handleReset}
             disabled={saving}
           >
-            ↻ Reset Changes
+            Reset Changes
           </button>
           <button
             className="btn btn-primary"
             onClick={handleSave}
             disabled={saving}
           >
-            {saving ? '💾 Saving...' : '✓ Save Settings'}
+            {saving ? 'Saving...' : 'Save Settings'}
           </button>
         </div>
       </div>

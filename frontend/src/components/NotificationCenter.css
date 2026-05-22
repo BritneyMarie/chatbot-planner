@@ -46,7 +46,7 @@
 
 /* Header */
 .notification-center-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary, #B97D7B);
   color: white;
   padding: 16px;
   display: flex;
@@ -217,8 +217,8 @@
 }
 
 .notification-item.unread {
-  background: #f0f7ff;
-  border-left: 3px solid #667eea;
+  background: var(--color-highlight, #ECC4C3);
+  border-left: 3px solid var(--color-primary, #B97D7B);
   padding-left: 9px;
 }
 
@@ -248,7 +248,7 @@
 }
 
 .unread-badge {
-  color: #667eea;
+  color: var(--color-primary, #B97D7B);
   font-size: 12px;
   flex-shrink: 0;
 }

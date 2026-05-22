@@ -193,7 +193,7 @@
 }
 
 .toggle-label input[type="checkbox"]:checked ~ .toggle-slider {
-  background: var(--color-primary, #667eea);
+  background: var(--color-primary, #B97D7B);
 }
 
 .toggle-slider::after {
@@ -258,7 +258,7 @@
 
 .progress-fill {
   height: 100%;
-  background: var(--color-primary, #667eea);
+  background: var(--color-primary, #B97D7B);
   transition: width 0.3s ease;
 }
 
@@ -288,14 +288,14 @@
 }
 
 .btn-primary {
-  background: var(--color-primary, #667eea);
+  background: var(--color-primary, #B97D7B);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--color-secondary, #764ba2);
+  background: var(--color-secondary, #928E5E);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(185, 125, 123, 0.4);
 }
 
 .btn-primary:disabled {

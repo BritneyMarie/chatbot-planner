@@ -116,7 +116,7 @@
 .auth-btn {
   width: 100%;
   height: 48px;
-  background: #fa7ce5;
+  background: var(--color-primary, #B97D7B);
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, .1);
   border: none;
@@ -128,7 +128,7 @@
 }
 
 .auth-btn:hover {
-  background: #e86bd0;
+  background: var(--color-secondary, #928E5E);
 }
 
 .auth-btn:disabled {
@@ -154,7 +154,7 @@
 }
 
 .auth-social-icons a:hover {
-  border-color: #fa7ce5;
+  border-color: var(--color-primary, #B97D7B);
 }
 
 .auth-toggle-box {
@@ -169,7 +169,7 @@
   left: -250%;
   width: 300%;
   height: 100%;
-  background: #fa7ce5;
+  background: var(--color-primary, #B97D7B);
   border-radius: 150px;
   z-index: 2;
   transition: 1.8s ease-in-out;

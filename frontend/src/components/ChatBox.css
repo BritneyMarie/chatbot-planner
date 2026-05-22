@@ -46,7 +46,7 @@
 
 /* Header */
 .chatbox-header {
-  background: linear-gradient(135deg, var(--color-primary, #667eea) 0%, var(--color-secondary, #764ba2) 100%);
+  background: var(--color-primary, #B97D7B);
   color: white;
   padding: 16px;
   display: flex;
@@ -200,7 +200,7 @@
 }
 
 .message.user .message-content {
-  background: var(--color-primary, #667eea);
+  background: var(--color-primary, #B97D7B);
   color: white;
   border-bottom-right-radius: 4px;
   animation: slideInRight 0.4s ease;
@@ -269,8 +269,8 @@
 }
 
 .message-input:focus {
-  border-color: var(--color-primary, #667eea);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary, #B97D7B);
+  box-shadow: 0 0 0 3px rgba(185, 125, 123, 0.1);
   transform: scale(1.01);
 }
 
@@ -283,7 +283,7 @@
   width: 36px;
   height: 36px;
   border: none;
-  background: var(--color-primary, #667eea);
+  background: var(--color-primary, #B97D7B);
   color: white;
   border-radius: 50%;
   cursor: pointer;
@@ -295,9 +295,9 @@
 }
 
 .send-btn:hover:not(:disabled) {
-  background: var(--color-secondary, #764ba2);
+  background: var(--color-secondary, #928E5E);
   transform: scale(1.1) rotate(15deg);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(185, 125, 123, 0.3);
 }
 
 .send-btn:active:not(:disabled) {
@@ -374,10 +374,10 @@
 
 .suggestion-btn:hover {
   background: #e8f0fe;
-  border-color: var(--color-primary, #667eea);
-  color: var(--color-primary, #667eea);
+  border-color: var(--color-primary, #B97D7B);
+  color: var(--color-primary, #B97D7B);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  box-shadow: 0 4px 12px rgba(185, 125, 123, 0.2);
 }
 
 /* Event Action Button */
@@ -385,7 +385,7 @@
   display: block;
   margin-top: 8px;
   padding: 6px 12px;
-  background: linear-gradient(135deg, var(--color-primary, #667eea) 0%, var(--color-secondary, #764ba2) 100%);
+  background: var(--color-primary, #B97D7B);
   color: white;
   border: none;
   border-radius: 6px;
@@ -397,7 +397,7 @@
 
 .event-action-btn:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 6px 16px rgba(185, 125, 123, 0.3);
 }
 
 .event-action-btn:active:not(:disabled) {

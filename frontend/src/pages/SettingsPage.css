@@ -1,20 +1,80 @@
 .settings-page {
   min-height: calc(100vh - 60px);
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--color-bg, #F5F0EB);
   padding: 40px 20px;
 }
 
 .settings-container {
   max-width: 800px;
   margin: 0 auto;
-  background: white;
+  background: var(--color-card, #FFFFFF);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
+/* Palette Selector */
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.palette-card {
+  border: 2px solid var(--color-border, #E2D9CF);
+  border-radius: 12px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: var(--color-card, #FFFFFF);
+  text-align: center;
+}
+
+.palette-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.palette-card.active {
+  border-color: var(--color-primary, #B97D7B);
+  box-shadow: 0 0 0 3px rgba(185, 125, 123, 0.3);
+  transform: translateY(-2px);
+}
+
+.palette-colors {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 32px;
+}
+
+.palette-swatch {
+  flex: 1;
+  height: 100%;
+}
+
+.palette-emoji {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.palette-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text, #3D3326);
+}
+
+.palette-check {
+  display: inline-block;
+  margin-left: 4px;
+  color: var(--color-primary, #B97D7B);
+  font-weight: 700;
+}
+
 .settings-header {
-  background: linear-gradient(135deg, var(--color-primary, #667eea) 0%, var(--color-secondary, #764ba2) 100%);
+  background: linear-gradient(135deg, var(--color-primary, #B97D7B) 0%, var(--color-secondary, #928E5E) 100%);
   color: white;
   padding: 40px 30px;
   text-align: center;
@@ -168,8 +228,8 @@
 .font-select:focus,
 .language-select:focus {
   outline: none;
-  border-color: var(--color-primary, #667eea);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--color-primary, #B97D7B);
+  box-shadow: 0 0 0 3px rgba(185, 125, 123, 0.1);
 }
 
 /* Toggle */
@@ -194,7 +254,7 @@
 }
 
 .toggle input[type="checkbox"]:checked ~ .toggle-slider {
-  background: var(--color-primary, #667eea);
+  background: var(--color-primary, #B97D7B);
 }
 
 .toggle-slider::after {
@@ -219,7 +279,7 @@
   background: #f8f9fa;
   padding: 20px;
   border-radius: 8px;
-  border-left: 4px solid var(--color-primary, #667eea);
+  border-left: 4px solid var(--color-primary, #B97D7B);
   grid-template-columns: 1fr;
 }
 
@@ -297,14 +357,14 @@
 }
 
 .btn-primary {
-  background: var(--color-primary, #667eea);
+  background: var(--color-primary, #B97D7B);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--color-secondary, #764ba2);
+  background: var(--color-secondary, #928E5E);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(185, 125, 123, 0.4);
 }
 
 .btn-primary:disabled {
@@ -319,8 +379,8 @@
 }
 
 .btn-secondary:hover:not(:disabled) {
-  border-color: var(--color-primary, #667eea);
-  color: var(--color-primary, #667eea);
+  border-color: var(--color-primary, #B97D7B);
+  color: var(--color-primary, #B97D7B);
 }
 
 .btn-secondary:disabled {

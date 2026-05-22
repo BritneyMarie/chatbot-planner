@@ -36,8 +36,8 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  border-color: var(--color-primary, #B97D7B);
+  box-shadow: 0 0 0 3px rgba(185, 125, 123, 0.15);
   transform: translateY(-2px);
 }
 
@@ -101,13 +101,13 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary, #B97D7B);
   color: white;
 }
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+  box-shadow: 0 8px 20px rgba(185, 125, 123, 0.35);
 }
 
 .btn-primary:active {

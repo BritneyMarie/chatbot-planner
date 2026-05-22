@@ -68,7 +68,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary, #B97D7B);
   color: white;
   border-radius: 12px 12px 0 0;
 }
@@ -163,8 +163,8 @@
 .form-group input[type="datetime-local"]:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  border-color: var(--color-primary, #B97D7B);
+  box-shadow: 0 0 0 3px rgba(185, 125, 123, 0.15);
   transform: translateY(-2px);
 }
 
@@ -231,13 +231,13 @@
 }
 
 .btn-save {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--color-primary, #B97D7B);
   color: white;
 }
 
 .btn-save:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 16px rgba(185, 125, 123, 0.4);
 }
 
 .btn-delete {
